@@ -1,0 +1,305 @@
+<head>
+<!--# include virtual="/header.html" -->
+<title>Atmosia - RCCT Doc</title>
+</head>
+<pre>
+============================
+RCCTv2 TRITIUM CHAMBER GUIDE
+============================
+An AINFA (Atmosia Information Agency) production; message @Ilya246 for invite
+
+The RCCTv2 is a rather advanced way of making tritium, extremely fast and efficient, but tedious to set up. And here, I will explain how to do it.
+
+┌───────┐
+│ Notes │
+├───────┘
+│This guide assumes you have basic atmos knowledge and know how to set up a variation of basic spaced-chamber tritium.
+│Please have allofatmos.txt (provided at the end of this guide) on hand while reading this.
+│If you already have atmos knowledge, skip to the end to just see how to do it.
+└───────
+
+┌──────────────────────────────────┐
+│ General information you may need │
+├──────────────────────────────────┘
+│You may skip this and come back to it if you don't understand something.
+├─┬────────────────────────────────┐
+│ │ Air injectors VS passive vents │
+│ ├────────────────────────────────┘
+│ │Both air injectors and passive vents may be used to put gas into your chamber. But which is better?
+│ │
+│ │Air injectors:
+│ │- Generally slower than pasive vents, but still fast.
+│ │- Gas injection speed scales with the amount of gas inside the air injector.
+│ │- Will immediately stop injecting gas after the tile it's injecting into goes over 9000kPa of pressure. Resumes once the pressure goes below that.
+│ │
+│ │Passive vents:
+│ │- Generally faster than injectors.
+│ │- Attempts to equalise the gas in itself with the gas in its tile.
+│ │- Causes scrubbers to be less efficient, as gas from the chamber gets into the passive vent, yet scrubbers can't scrub from it.
+│ │
+│ │Conclusion: for most applications, air injectors are better, as the speed of passive vents has few practical applications.
+│ └─────────────────────────────────
+├─┬───────────┐
+│ │ Radiators │
+│ ├───────────┘
+│ │- Require gas to be actively flowing through them to work. Pumps help with this.
+│ │- Can work in both directions. The output is the end with lower pressure.
+│ │- Interact with the tile they're on, affect the temperature of the output gas.
+│ │
+│ │- Heat exchange rate is proportional to dT^4, dT being the difference of temperature between the gas flowing through the radiator, and the temperature of gas in the tile the radiator is on;
+│ │Example: heat between 300K pipe gas and 310K air gas will be exchanged 2^4 = 16 times slower than heat between 300K pipe gas and 320K air gas.
+│ │
+│ │- When on lattice, will cool gas down. Space acts like 2.7K air.
+│ │Extremely good at cooling very hot gas. Or tritium, as it has a low heat capacity [allofatmos.txt].
+│ │
+│ │- When placed inside air, will exchange heat between the tile air and the gas passing through the radiator.
+│ │You can use this to, say, cool down hot gas chambers: pump cold gas through a radiator inside the chamber to exchange heat between the cold gas and the hot room.
+│ │This will cool down the room and heat up the gas inside the radiator.
+│ │
+│ │- Behavior on spaced plating is undefined (don't do this).
+│ └────────────
+└───────────────────────────────────
+┌───────┐
+│ What? │
+├───────┘
+│RCCTv2 stands for "Radiator Cooled Chamber Trit version 2". The name matches what it does, and it'll be explained later.
+└────────
+
+┌──────┐
+│ Why? │
+├──────┘
+├─┬────────────────────────┐
+│ │ Why would i want this? │
+│ ├────────────────────────┘
+│ │In normal spaced-chamber tritium production, much of the gas you put into the chamber is lost to space. This could be avoided.
+│ └─────────────────────────
+│─┬────────────────────────┐
+│ │ Why is losing gas bad? │
+│ ├────────────────────────┘
+│ │- Losing gas to space
+│ │This means that you make tritium slower, as that could've burnt into tritium instead.
+│ │
+│ │- Losing oxygen to space
+│ │This means you get less of it for frezon production, and that needs a lot.
+│ │
+│ │- Losing plasma to space
+│ │This is especially bad because plasma is limited and costly to purchase.
+│ │
+│ │- Losing tritium to space
+│ │The badness of losing tritium to space should be self-explanatory.
+│ └─────────────────────────
+├─┬─────────────────────────────────────────┐
+│ │ So why can't we just close the chamber? │
+│ ├─────────────────────────────────────────┘
+│ │You normally can't put gas into air with a pressure above 9000kPa.
+│ │This is the reason the "spaced tritium chamber" is spaced, to reduce the pressure so that the injector keeps being able to work.
+│ └──────────────────────────────────────────
+├─┬───────────────────────────────────┐
+│ │ What causes pressure to build up? │
+│ ├───────────────────────────────────┘
+│ │The PV=nRT formula. However, I'll do the math for you. Pressure is affected by:
+│ │
+│ │- Volume (liters): twice the volume, half the pressure.
+│ │A bigger chamber (volume) means less pressure. Unfortunately, chambers generally do not expand or shrink on demand.
+│ │
+│ │- Amount (mols) of gas: twice the gas, twice the pressure.
+│ │The pressure of gas scales with its amount. More gas means more pressure.
+│ │
+│ │- Temperature (deg. K) of gas: twice the Kelvin, twice the pressure.
+│ │Gas pressure also scales with the gas' temperature in Kelvin.
+│ │
+│ │Conclusion? Pressure builds up because we keep injecting gas into the chamber and because the burn heats the gas up.
+│ └────────────────────────────────────
+├─┬──────────────┐
+│ │ Consequences │
+│ ├──────────────┘
+│ │An additional consequence of this: we want to keep our burn chamber as close as possible to a temperature of 1643.15K.
+│ │
+│ │A temperature above 1643.15K does not make plasma burn any faster [allofatmos.txt].
+│ │Therefore, going above 1643.15K does not speed up our tritium production per amount of gas in the chamber.
+│ │However, such temperatures also mean we have to reduce the amount of gas in the chamber in order to not go above 9000kPa.
+│ │And that means we burn less gas, at no additional speed per mole. This means, above 1643.15K, we make less tritium.
+│ │
+│ │Conversely, going below 1643.15K causes the burn to slow down more than it causes the pressure to go down, even though we can fit more gas.
+│ │So, below 1643.15K, we also make less tritium.
+│ │
+│ │The spaced tritium chamber often burns quite above 1643.15K. This makes it slower than the RCCT.
+│ └───────────────
+├─┬────────────────────────────────────┐
+│ │ How to make pressure not build up? │
+│ ├────────────────────────────────────┘
+│ │As a direct consequence of what I just explained, there's 2 ways to do this:
+│ │
+│ │1. Remove gas from the chamber.
+│ │The spaced tritium chamber does this. This is bad due to aforementioned reasons.
+│ │
+│ │2. Cool down the chamber.
+│ │This is hard, but results in high efficiency.
+│ │The spaced chamber also does this by injecting large amounts of gas at 293.15K (20 degrees C), but that provides negligible cooling.
+│ │This is what the RCCT does.
+│ └─────────────────────────────────────
+└───────
+
+┌──────┐
+│ How? │
+├──────┘
+│The RCCTv2 achieves cooling by using radiators.
+├─┬──────────────────┐
+│ │ What does it do? │
+│ ├──────────────────┘
+│ │The radiators are separated into their own independent loop, through which frezon circulates.
+│ │It cools down the air on the tile of the air injector, so that it doesn't go above 9000kPa.
+│ │This, however, heats the frezon, so the 2 radiators on lattice cool it back down.
+│ └───────────────────
+├─┬────────────────────────────┐
+│ │ Where do i get the frezon? │
+│ ├────────────────────────────┘
+│ │You start the burn without the frezon. Let it overheat, you'll cool it later.
+│ └─────────────────────────────
+├─┬─────────────┐
+│ │ Why frezon? │
+│ ├─────────────┘
+│ │Frezon has a high heat capacity [allofatmos.txt].
+│ │This lets it cool the chamber down very effectively.
+│ └──────────────
+├─┬────────────────────────────────────────────────────────┐
+│ │ Wouldn't it still overpressure from waste gas buildup? │
+│ ├────────────────────────────────────────────────────────┘
+│ │Yes, it would.
+│ │That's why you set the scrubbers to also scrub water vapour and CO2, to prevent their buildup.
+│ │You then filter tritium out downstream, after the output radiator.
+│ │The waste gases should usually be spaced.
+│ └─────────────────────────────────────────────────────────
+├─┬──────────────────────┐
+│ │ About oxygen buildup │
+│ ├──────────────────────┘
+│ │In spaced chambers we can put whatever we want into the chamber and not clean it, as that'll get spaced anyway.
+│ │With the RCCT, there is no such luxury.
+│ │
+│ │With the normal spaced chamber injection ratio(~98:2), the *vast* majority of the oxygen doesn't burn, but is instead spaced.
+│ │Only about 3-5% of the oxygen is actually burnt and not spaced.
+│ │This doesn't happen with the RCCT, as no gas is spaced, so a RCCT will overpressure due to oxygen buildup if you use it with a 98:2 ratio.
+│ │
+│ │There are 2 ways to deal with this:
+│ │
+│ │1. Just remove the excess oxygen
+│ │This doesn't work. We tried.
+│ │
+│ │2. Don't have excess oxygen
+│ │This is what the RCCT does. The RCCT uses an in-operation ratio of ~54:46 plasma:oxygen.
+│ │This is not 5:2 as expected [allofatmos.txt], because a small amount of tritium also combusts and takes up oxygen.
+│ └───────────────────────
+├─┬──────────────────────────────────────────────────────────────────┐
+│ │ ~54:46 ratio? But doesn't tritium only get made below 1% plasma? │
+│ ├──────────────────────────────────────────────────────────────────┘
+│ │Yes. However, the ratio tritium requires can be achieved by simply having "surplus" oxygen present in the chamber.
+│ │Not all of the oxygen in the chamber has to participate in combustion or go anywhere. It can just stay there.
+│ │This is achieved by, before usage, pumping the RCCT with 1200mol of 1:99 plasma:oxygen mix. Only Afterwards is the mixer is switched to the ~54:46 ratio.
+│ │
+│ │The 54% plasma will only combust the 46% of oxygen injected along with it, the rest of the oxygen present in the chamber will remain there.
+│ │This makes the ratio of plasma to oxygen in the chamber stay below 1%.
+│ │
+│ │Example for ease of understanding: Say, you have 100mol oxygen in a tile. You inject 1mol plasma and 1mol oxygen (your mixer is set to 50:50).
+│ │What is now the ratio of plasma to oxygen in the chamber? Yes, below 1% plasma.
+│ │Afterwards, the *newly injected* oxygen and plasma will combust, and the 100mol oxygen you initially had will remain.
+│ │Now repeat the process. You get what the RCCT does.
+│ └───────────────────────────────────────────────────────────────────
+└───────
+
+┌───────────┐
+│ Schematic │
+└───────────┘
+
+    ┌──┬──┬──┬──┬──┬──┬──┐
+    │  │  │  │  │  │  │  │  ^
+    │  │  │ ┏│ ┳│ ━│ ┓│  │  |
+    ├──┼──┼──┼──┼──┼──┼──┤  |
+    │  │ ┏│ ━│VR│ ┓│  │  │  |
+    │  |  │ ┃│ ┃│  │ ┣│ ┓│  |
+    ├──┼══┼══┼══┼══┼══┼──┤  |
+    │  ║AU│  ║SU│SL│SU║  │  |
+    │  ║0 │┣ ║ ━│ ┃│ ┏║ ┛│  | 7
+trit├──┼──┼──┼──┼──┼──┼──┤  |
+<---│VL║AL│  ║SL│IR│SU║  │  | t
+out │  ║0┃│╋ ║  │AU│ ━║ ━│ -----> plasma-oxygen mixer
+    ├──┼──┼──┼──┼──┼──┼──┤  | i
+    │  ║AU│  ║SD│SL│SD║  │  | l
+    │  ║0 │┣ ║ ━│ ┃│  ║  │  |
+    ├──┼══┼══┼══┼══┼══┼──┤  |
+    │  │ ┗│ ━│VL│ ┻│ ━│VL│ <----- frezon input
+    │  │  │ ┃│ ┃│  │ ┃│  │  |
+    ├──┼──┼──┼──┼──┼──┼──┤  |
+    │  │  │  │  │  │  │  │  |
+    │  │  │ ┗│ ┻│ ━│ ┛│  │  v
+    └──┴──┴──┴──┴──┴──┴──┘
+
+     <------------------>
+            7  til
+
+┌────────────────────────┐
+│ Schematic designations │
+├────────────────────────┘
+│Note that I, S, or similar designations mean that the device is present in the tile; its direction is shown via the R, U, L, and D designations.
+│
+│┌──┐
+││  │
+││  │
+│└──┘ - one tile
+│
+│║ - vertical thindow or windoor
+│═ - horizontal thindow or windoor
+│━ - horizontal pipe
+│┃ - vertical pipe
+│┓ ┗ ┛ ┏ - pipe bend
+│┣ ┫ ┳ ┻ - T-pipe
+│╋ - 4-way pipe
+│V - volumetric pump
+│S - scrubber
+│I - injector
+│A - radiator (must be built *after* anything else on the tile, except pipes)
+│0 - lattice
+│R, U, L, D - right, up, left, down; show the rotation of the device in the same tile
+└─────────────────────────
+
+┌───────────┐
+│ Operation │
+├───────────┘
+│1. Build it.
+│2. Link the 8 scrubbers to an air alarm, disable automode, set them to scrub all gases, except: oxygen, plasma.
+│3. Make sure the tritium output leads into a filter to filter the tritium out, and the tritium has storage space to go to.
+│4. Set your mixer to 1:99 plasma:oxygen.
+│5. Start filling the chamber until the sensors on scrubbers in the air alarm say you have 1200-1300mol per tile.
+│You may click buttons in the air alarm to have it update faster. It normally updates very slowly and it's easy to miss the right moment.
+│If you have above 1400mol gas, vent some.
+│6. Disable the mixer and set it to 54:46.
+│7. Ignite.
+│8. Make ~400mol frezon with the tritium produced out of this.
+│9. Make sure the radiator loop pumps are disabled.
+│10. Put frezon into the radiator loop.
+│11. Enable the mixer at a pressure of ~40kPa.
+│12. Slowly raise the mixer pressure. Stop when the plasma percentage in the tiles is close to 1%.
+│The gas injected by the mixer may cool down the chamber. Watch out and try to not cool it too much.
+│13. When the burn overpressures due to heat, enable the radiator loop pumps
+│You may need to enable the pumps at a speed below the maximum, in order to not cool the chamber too much. 1370C or 1643.15K is ideal.
+└────────────
+┌─────────────────────┐
+│ Long-term operation │
+├─────────────────────┘
+├ Watch the gas amounts in the chamber.
+│
+├ If the oxygen is dropping. raise the mixer oxygen ratio a little.
+│Also do this if oxygen is below 1150mol.
+│
+├ If the oxygen is rising, drop the mixer oxygen ratio a little.
+│Also do this if oxygen is above 1400mol.
+│
+├ If CO2 is being made, drop the mixer pressure a little.
+│
+├ If the plasma percentage is significantly below 1%, raise the mixer pressure a little.
+│Make sure you have not run out of plasma.
+│
+├ If the mixer has, for any reason (plasma ran out, depowered, etc), been made inoperational, disable the radiator loop.
+└──────────────────────
+
+ADDENDUM: <b><a href="../allofatmos.html">allofatmos</a></b>
+</pre>

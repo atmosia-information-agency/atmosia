@@ -1,0 +1,138 @@
+<head>
+<!--# include virtual="/header.html" -->
+<title>Atmosia - Cheatsheet</title>
+</head>
+<pre>
+# all gases
+
+    NAME       | SPECIFIC  |    PRICE
+               |   HEAT    | (spesos/mol)
+               | (J/mol/K) |
+oxygen         | 20        | 0
+nitrogen       | 30        | 0
+carbon dioxide | 30        | 0
+plasma         | 200       | 0
+tritium        | 10        | 2.5
+water vapour   | 40        | 0
+ammonia        | 20        | 1
+nitrous oxide  | 40        | 0.1
+frezon         | 600       | 3
+BZ             | 20        | 2
+healium        | 10        | 3
+nitrium        | 10        | 3
+pluoxium       | 80        | 0.1
+
+pluoxium also behaves like 8x oxygen for breathing purposes
+
+notes:
+- the specific heats are all scaled by a factor of 1/8; this does not affect gas-gas heat transfer, but will make it so that, for example, heaters heat gas 8 times more easily than expected
+
+
+# all reactions
+- reactions tick every 0.5s
+- unless otherwise specified, reactions always need at least 0.01mol of every gas involved
+- higher-priority reactions happen first within a tick
+- if unspecified, volume is in liters, pressure is in kPa, temperature is in kelvin
+
+
+## plasma fire reaction
+- only happens above 373.15K
+- scales burn rate from 100C to 1370C
+- scales plasma:oxygen ratio from 5:7 to 5:2 as temp changes from 100C to 1370C
+- releases 160kJ per mole of plasma burnt
+- the oxygen burnt is effectively voided; doesn't affect output
+- when below 1:96 plasma:oxygen, burns plasma into trit
+- when between 1:96 and 3:96 plasma:oxygen, burns plasma into a mix of CO2 and trit
+- per tick, burns an amount of plasma equal to the lesser of 1/9 the plasma present or 1/90 the oxygen present
+- oxygen burnt depends on amount of plasma burnt and the current burning ratio (mentioned above)
+- the proportion of a plasma converted into trit linearly increases from 0% to 100% as the ratio of oxygen to plasma goes from 3:96 to 1:96 (50% at 2:96; 75% at 1.5:96)
+- when above 3:96 plasma:oxygen, burns plasma into CO2
+- tick priority -2
+
+## frezon production reaction
+- only happens below 73.15K
+- consumes tritium and oxygen at a ratio of exactly 1:50 tritium:oxygen
+- nitrogen is needed as a catalyst and is not consumed
+- consumes 1/50 of available tritium-oxygen mix (5mol tritium and 666666mol oxygen is as fast as 5mol tritium and 250mol oxygen; 0.1mol tritium and 5mol oxygen will be converted)
+- converts all consumed gas to nitrogen and frezon
+- at lower temperatures, makes linearly more nitrogen and less frezon (at 73.15K, only makes frezon; at ~36.6K, makes 50% of both; at 23.15K, makes ~31.6% frezon; at 0K, only makes nitrogen)
+- below a percentage of nitrogen, mixes slower
+- the required percentage of nitrogen is 10% the amount of oxygen at 73.15K and linearly decreases at lower temperatures (would be 5% at ~36.6K and ~3.16% at 23.15K)
+- tick priority 2
+
+## tritium fire reaction
+- only happens above 373.15K
+- if there is less oxygen than tritium or the total thermal energy of the mixture is below 143kJ, burns tritium into water vapour at a rate equal to 1/100 of oxygen present; releases 284kJ per mole burnt
+- else, burns as much oxygen into vapour as there is tritium, burns 10% tritium; releases 2840kJ per mole of oxygen burnt
+- tick priority -1
+
+## frezon coolant reaction
+- only happens above 23.15K
+- speed increases linearly as temperature rises from 23.15K to 373.15K, no increase beyond that (100% speed at 373.15K, 0% speed at 23.15K, 50% speed at 198.15K)
+- all following points assume full speed
+- consumes 1/20 frezon present and 5 times that amount nitrogen (with 20mol frezon and 666666mol nitrogen in the mixture, it will consume 1mol frezon and 5mol nitrogen)
+- converts all consumed gas to nitrous oxide
+- makes 600kJ of cold per mole of frezon consumed
+- at temperatures beyond 373.15K, makes cold more efficiently as if speed had gone past 100%; (consumes 1200kJ per mole (200%) at 723.15K, consumes 900kJ per mole (150%) at 548.15K); can at most reach 10 times efficiency (6000kJ per mole frezon consumed)
+- tick priority 1
+
+## ammonia-oxygen reaction
+- only happens above 323.15K
+- the equation for the speed of the reaction is the following:
+`reaction_speed = ammonia * (ammonia / total_gas)^2 * (oxygen / total_gas)^2 / 5`
+- burns an amount of oxygen and ammonia equal to reaction speed
+- converts all consumed gas to an 1:3 mix of nitrous oxide and water vapour
+- tick priority 2
+
+## nitrous oxide decomposition
+- only happens above 850K
+- consumes half of present nitrous oxide
+- per 1mol of gas consumed, makes 1mol nitrogen and 0.5mol oxygen
+- tick priority 0
+
+## BZ formation
+- only happens below 313.149K
+- needs at least 10mol plasma and 10mol n2o
+- consumes nitrous oxide and plasma, makes nitrogen, oxygen, BZ
+- the reaction effectively consists of nitrous oxide decomposition and a plasma-nitrous reaction that produces BZ
+- nitrous oxide decomposition:
+-- happens if the ratio of nitrous to plasma is at most 1:3; if there is more nitrous, does not happen at all; the less nitrous, the more of it decomposes
+-- happens in place of what would've been BZ production (the nitrous decomposes instead of being used for BZ)
+-- produces 1mol nitrogen and 0.5mol oxygen for every mol of nitrous decomposed
+- BZ production:
+-- produces 1mol of BZ from 0.4mol of n2o and 0.8mol of plasma
+- produces 200kJ of heat per 1mol of nitrous used in any way
+- makes 0.01 * volume/pressure mol/s of BZ, slows down if you have less nitrous than you have plasma (1:2 ratio means slowdown to half, 1:3 ratio means to 1/3rd, more nitrous than plasma means full speed)
+- (interpretation) volume matters a lot for BZ formation speed; V/P is the same as V^2/(nRT); this means BZ formation speed is proportional to volume squared and inversely proportional to moles involved and the mix's temperature
+- tick priority 2
+
+## healium production
+- only happens between 22K and 300K
+- needs at least 5mol frezon and 5mol BZ
+- produces 3mol of healium per 2.75mol of frezon and 0.25mol of BZ
+- produces 0.9*temperature healium/s
+- produces 3kJ of heat per mole of healium produced
+- tick priority 2
+
+## nitrium production
+- only happens above 1500K
+- needs at least 10mol nitrogen, 20mol tritium, and 5mol BZ
+- produces 1mol nitrium from 1mol tritium, 1mol nitrogen and 0.05mol BZ
+- produces temperature/2984 nitrium/s
+- removes 100kJ of heat per mole of nitrium produced
+- tick priority 2
+
+## nitrium decomposition
+- only happens below 373.149K
+- produces 1mol of nitrogen and 1mol of water vapour from 1mol of nitrium
+- consumes temperature/2984 nitrium/s
+- produces 30kJ of heat per 1mol nitrium consumed
+- tick priority 2
+
+## pluoxium production
+- happens between 50K and 273.15K
+- produces 1mol of pluoxium and 0.01mol of water vapour from 1mol of CO2, 0.5mol of oxygen, 0.01mol of tritium
+- produces as much pluoxium as the smallest of 5mol, CO2 mols, 2x oxygen mols, or 100x tritium mols
+- produces 250kJ of heat per 1mol pluoxium produced
+- tick priority 3
+</pre>

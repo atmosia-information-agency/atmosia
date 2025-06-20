@@ -1,0 +1,97 @@
+<head>
+<!--# include virtual="/header.html" -->
+<title>Atmosia - SM Doc</title>
+</head>
+<pre>
+# SM reference sheet
+
+## SM behavior
+- updates every 1s
+- takes 15% of the gas of the tile it's on, puts it back in after doing gas effects and damage behavior with it
+
+## gas effects
+
+### gas effects table
+    NAME       | TRANSMIT  |  HEAT   | POWER MIX
+               | MODIFIER  | PENALTY |   RATIO
+oxygen         | 1.5       | 1       | 1
+nitrogen       | 0         | -1.5    | -1
+carbon dioxide | 0         | 0.1     | 1
+plasma         | 4         | 15      | 1
+tritium        | 30        | 10      | 1
+water vapour   | 2         | 12      | 1
+frezon         | 3         | -10     | -1
+ammonia        | 0         | 0.5     | 1
+nitrous oxide  | 0         | -5      | -1
+BZ             | 0         | 5       | 1
+healium        | 2.4       | 4       | 1
+pluoxium       | 0         | -2.5    | -1
+
+### behavior
+IMPORTANT NOTE: when referring to amount of gas, all below points are talking about *the ratio of gas to total gas in the tile*, so "amount of oxygen" in an 1mol o2, 5mol co2, 4mol n2 mix would mean 0.1 (1 / (1 + 5 + 4) = 0.1); points that talk about moles will say "moles" and not "amount"
+also note that all the points described happen in the order they are listed
+
+- power ratio is determined by summing up amount of every gas multiplied by its power mix ratio; capped between 0 and 1
+- heat modifier is determined by summing up amount of every gas multiplied by its heat penalty; capped to not go below 0.5
+- transmission bonus is determined by summing up amount of every gas multiplied by its transmit modifier; affected by water vapour (multiplied from 1x to 0.75x depending on amount of water vapour; 0.5 water vapour means 0.875x, or halfway)
+- if there's at least 20 moles of gas and amount of carbon dioxide is at least 0.2, powerloss dynamic scaling is adjusted by (amount of CO2 - powerloss dynamic scaling), but by no more than 0.02 into either direction
+-- otherwise, powerloss dynamic scaling is decreased by 0.05
+-- powerloss dynamic scaling is capped between 0 and 1
+- powerloss inhibition is (1 - powerloss dynamic scaling * (mols of gas / 500, capped between 1 and 1.5)), capped between 0 and 1
+- if matter power is not 0, matter power is decreased by 10%, but by no less than 40, and power is increased by 0.1x of this decrease
+- power is increased by (temperature of the absorbed gas divided by 293.15K (20C), multiplied by power ratio, multiplied by (30 if power ratio is below 0.8, 50 otherwise))
+- radiation intensity is (0.003 * power) and is 10% stronger (additive) for every 1 transmission bonus value
+- gas temperature is increased by (0.11 * power * heat modifier) kelvin
+- gas temperature is capped to be no more than (2500K * heat modifier) (yes, this can instantly cool down extremely hot gas)
+- if there's at least 0.01mol of CO2 *in the SM tile*, consumes an amount of CO2 and O2 and releases that same amount of pluoxium; i couldn't make sense of the math because it's even more cursed than the rest of SM so no equations here
+- produces (power * heat modifier / 1650) mol of plasma
+- adjusts oxygen by ((power * 0.55 + gas temperature * heat modifier - 293.15) / 325) mol
+- power is reduced by the smaller of (power / 500)^3 or (power * 0.83), both multiplied by powerloss inhibition
+
+## damage behavior
+NOTE: just like gas effects, this only takes 15% of the SM tile's gas
+
+- yells to engi radio at 50 damage
+- yells to common radio at 500 damage
+- delams at 900 damage
+- if spaced, gets damaged by power/4000, but no less than 0.1
+- takes temperature damage:
+-- for this, gas temperature is considered to be (temperature * (gas moles / 200, capped between 0.5 and 1))
+-- if temperature is above 333.15K, damage by 7/12 of the excess
+- if above 2500 power, damage by 1/2000 of the excess
+- if above 900 mol of gas, damage by 1/320 of the excess
+-- else, change damage by ((temperature - 333.15, but no less than 0.001) / 150)
+- if there are spaced tiles adjacent (vertically or horizontally) to the SM, damage it by (power * 0.25 * (0, if integrity above 75%, else 0.002, if above 45%, else 0.005, if above 25%, else 0.0009, if above 10%, else 0.0005))
+- cap damage dealt to 0.2% of integrity
+
+## delam
+
+- will start delam if damage goes past 900
+- takes 120 seconds to delam
+- delam type is considered using the SM tile's full mix, not 15% of it
+- if above 900 moles, singulo delam
+- else if above 2500 power, tesla delam
+- else explosion delam
+
+## on collide
+
+- ignores you if you're immune
+- increases power by specified value for special items, for total damage for projectiles, or by 1 for anything else
+- increases matter power by 200 for anything with MobState, generally mobs
+- deletes
+- creates ash if not projectile
+
+## on being interacted with by hands
+
+- ignores you if you're immune
+- increases matter power by 200
+- creates ash if not projectile
+
+## if anything sharp used
+
+- 30 second doafter to interact
+- damages by 10%
+- makes announcement
+- spawns SM sliver
+- reduces delam time by 10 seconds, but no lower than 30s
+</pre>
