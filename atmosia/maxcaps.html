@@ -3,52 +3,53 @@
 <title>Atmosia - Maxcap Recipes</title>
 </head>
 <pre>
+<h1>Maxcap Recipe Database</h1>
+<h2>Instructions</h2>
+For any recipe in this list, usually the production steps will be as follows:
+1. Produce no less gas than is mentioned in the REQ section, preferably more
+2. Mix the gases in the MIX section into a pipenet, required gas percentages provided; try to be precise
+2a. If mixing gases with different temperatures, consider using the atmosim -m utility for help, since gas mixers mix pressure-wise and not mol-wise
+3. Heat or cool the resulting mix to the temperature outlined in the section
+4. Put the resulting mix into a canister, set the canister's release pressure to what's provided in the section
+5. Get the gas mentioned in the CAN section into a pipenet, heat or cool it to provided temperature (if needed)
+5a. If you're heating plasma or frezon, you might want to use a radiator-based heater for it (TODO: guide)
+6. Get the gas into a canister, make sure canister pressure is above what's mentioned in the CAN section
+7. Fill as many empty gas tanks as you want from the MIX section gas canister; do not change the release pressure, and take care to not leak the gas
+8. To prime a filled gas tank, put it into the CAN section gas canister, then fill it with max release pressure; after the time mentioned, it will explode
+
 <h3>tritium-27r-2s-OT+P</h3>
-TANK \ 81.407501% oxygen \ 18.592506% tritium \ ratio 0.228388 \ 23.150000K 142.760422kPa
-CANISTER \ 833.248718K plasma
-STATS \ range 27.004436 \ ticks 4 \ optstat 0.689494
-LEAST-MOLS \ 845.308228mol oxygen \ 193.058380mol tritium \ 409.490997mol plasma
-TANK-MOLS \ 3.018958mol oxygen \ 0.689494mol tritium
+STATS: [ time 2.0s | radius 27.00til | optstat 0.67799586 ]
+MIX:   [ 84.894356% oxygen | 15.105642% tritium | 31.839327K | 237.63799kPa ]
+CAN:   [ 100% plasma | 674.27325K | >1795.2507kPa ]
+REQ:   [ 1070.71mol oxygen | 190.52mol tritium | 449.92mol plasma ]
 
-<h3>ticks-27r-4s-OT+F</h3>
-TANK \ 72.298012% oxygen \ 27.701992% tritium \ ratio 0.383164 \ 131.322632K 761.736694kPa
-CANISTER \ 444.478821K frezon
-STATS \ range 27.043171 \ ticks 8 \ optstat 8.000000
-LEAST-MOLS \ 706.131348mol oxygen \ 270.564087mol tritium \ 767.658264mol frezon
-TANK-MOLS \ 2.521898mol oxygen \ 0.966300mol tritium
+<h3>ticks-26r-4.5s-OT+F</h3>
+STATS: [ time 4.5s | radius 26.47til | optstat 9 ]
+MIX:   [ 71.678116% oxygen | 28.321882% tritium | 144.5651K | 785.4228kPa ]
+CAN:   [ 100% frezon | 452.22748K | >1245.5095kPa ]
+REQ:   [ 658.06mol oxygen | 260.02mol tritium | 465.41mol frezon ]
 
-<h3>ticks-20r-8.5s-OT+P</h3>
-TANK \ 68.357201% oxygen \ 31.642807% tritium \ ratio 0.462904 \ 117.675537K 400.870728kPa
-CANISTER \ 423.997620K plasma
-STATS \ range 20.146463 \ ticks 17 \ optstat 17.000000
-LEAST-MOLS \ 392.099518mol oxygen \ 181.504349mol tritium \ 804.739990mol plasma
-TANK-MOLS \ 1.400355mol oxygen \ 0.648230mol tritium
+<h3>tritium-20r-8.5s-OT+P</h3>
+STATS: [ time 8.5s | radius 20.00til | optstat 0.6323899 ]
+MIX:   [ 68.93031% oxygen | 31.069693% tritium | 127.03016K | 429.95108kPa ]
+CAN:   [ 100% plasma | 424.4739K | >1602.2509kPa ]
+REQ:   [ 394.24mol oxygen | 177.70mol tritium | 637.85mol plasma ]
 
 <h3>ticks-20r-10.5s-OT+F</h3>
-TANK \ 66.166725% oxygen \ 33.833275% tritium \ ratio 0.511334 \ 235.379395K 859.184387kPa
-CANISTER \ 410.387451K frezon
-STATS \ range 20.000874 \ ticks 21 \ optstat 21.000000
-LEAST-MOLS \ 406.678680mol oxygen \ 207.948517mol tritium \ 831.428528mol frezon
-TANK-MOLS \ 1.452424mol oxygen \ 0.742673mol tritium
+STATS: [ time 10.5s | radius 20.33til | optstat 21 ]
+MIX:   [ 65.97827% oxygen | 34.02173% tritium | 167.26158K | 809.4505kPa ]
+CAN:   [ 100% frezon | 431.65814K | >1221.3961kPa ]
+REQ:   [ 539.56mol oxygen | 278.22mol tritium | 478.14mol frezon ]
 
-<h3>radius-13.3r-21.5s-PT+O</h3>
-TANK \ 54.566418% plasma \ 45.433582% tritium \ ratio 0.832629 \ 382.709473K 669.152039kPa
-CANISTER \ 293.149994K oxygen
-STATS \ range 13.303996 \ ticks 43 \ optstat 13.303996
-LEAST-MOLS \ 160.647842mol plasma \ 133.760056mol tritium \ 1163.936035mol oxygen
-TANK-MOLS \ 0.573742mol plasma \ 0.477714mol tritium
-
-<h3>ticks-5.03r-81.5s-PT+O</h3>
-TANK \ 53.330444% plasma \ 46.669552% tritium \ ratio 0.875102 \ 376.890839K 846.635376kPa
-CANISTER \ 293.149994K oxygen
-STATS \ range 5.032035 \ ticks 163 \ optstat 163.000000
-LEAST-MOLS \ 202.440872mol plasma \ 177.156296mol tritium \ 680.118225mol oxygen
-TANK-MOLS \ 0.720430mol plasma \ 0.630449mol tritium
+<h3>ticks-13r-22.5s-PT+O</h3>
+STATS: [ time 22.5s | radius 13.02til | optstat 45 ]
+MIX:   [ 52.208485% plasma | 47.791515% tritium | 382.42734K | 684.853kPa ]
+CAN:   [ 100% oxygen | 293.15K | >1346.4385kPa ]
+REQ:   [ 157.99mol plasma | 144.62mol tritium | 776.14mol oxygen ]
 
 <h3>ticks-26r-8.5s-O/T/N2+F</h3>
-TANK \ 14.538240% oxygen \ 16.863285% tritium \ 68.598473% nitrous_oxide \ 112.83661K 726.612610kPa
-CANISTER \ 542.780273K frezon
-STATS \ range 26.131693 \ ticks 17 \ optstat 17.000000
-LEAST-MOLS \ 158.197266mol oxygen \ 183.497147mol tritium \ 746.451477mol nitrous_oxide \ 404.691223mol frezon
-TANK-MOLS \ 0.562980mol oxygen \ 0.653015mol tritium \ 2.656411mol nitrous_oxide
+STATS: [ time 8.5s | radius 26.13til | optstat 17 ]
+MIX:   [ 14.539835% oxygen | 16.864481% tritium | 68.59568% nitrous_oxide | 112.840805K | 726.60645kPa ]
+CAN:   [ 100% frezon | 542.761K | >1304.536kPa ]
+REQ:   [ 158.21mol oxygen | 183.51mol tritium | 746.40mol nitrous_oxide | 406.15mol frezon ]
 </pre>
