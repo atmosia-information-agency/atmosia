@@ -1,0 +1,12 @@
+<head>
+<!--# include virtual="/header.html" -->
+<title>Atmosia - Maxcap Recipes</title>
+</head>
+<h1>Glossary</h1>
+<ul>
+<li><b>Pipe Network</b>: A pipe network (pipenet) is a collection of pipes that are not separated from each other by any atmospheric device, excluding manual or signal valves. All pipes in a pipe network have the same amount, temperature and composition of gas, and a pipenet may be considered one huge entity.</li>
+<li><b>Atmos Device</b>: An atmos device (atmospherics device) is an entity that operates on a grid's, or N pipe networks of, gas content. Atmos devices "tick" every t_delta seconds from the moment they are created. They are the sole actors in an active atmos system, and may even perform high level operations such as merging pipenets.</li>
+<li><b>Volume Pump</b>: A volume pump is an atmos device that merges (Q*speedup*t_delta) liters of gas of the input pipe network to an output pipe network. They have two intrinsic parameters, Q - the flow speed of gas in liters per second, and P_max - the maximum pressure of the output before the pump will refuse transfer. If the input pipenet is smaller than a flow tick's volume, the entire input pipenet gets transferred. For example, a normal volumetric pump would have a Q of 200L/s and a P_max of 9000 kPa, but a filter would have a Q of 1000L/s and a P_max of 4500 kPa.</li>
+<li><b>Delta Time</b>: Delta time, t_delta or Δt, is an internal variable that specifies how long a full atmos tick is supposed to last. A counter is kept in the root of the Atmospherics system, which triggers all reactions to happen on the immediate next tick after a new multiple of delta time has been reached.</li>
+<li><b>Joint</b>: A joint is any physics connection that causes multiple entities to allow feeling mutual attractive forces. Joints are created whenever anything is pulled or anchored, and destroyed when unpulled, unanchored or teleported into another map (also known as a "Z level"). It's unrelated to parenting, which may look to have the same effect if rotation is ignored.</li>
+</ul>
