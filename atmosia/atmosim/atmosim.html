@@ -1,0 +1,38 @@
+<head>
+<!--# include virtual="/header.html" -->
+<title>Atmosia - Atmosim</title>
+</head>
+<pre>
+<h1>Atmosim Web</h1>
+<textarea rows="5" cols="60" type="text" id="args" placeholder="Enter -h to see usage instructions"></textarea>
+<button onclick="runSim()">Run</button>
+<div id="output"></div>
+<script src="atmosim.js"></script>
+<script>
+    let ModuleInstance = null;
+
+    // Initialize module when script loads
+    createAtmosim({
+        print: function(text) {
+            const output = document.getElementById('output');
+            output.textContent += text + '\n';
+        },
+        onRuntimeInitialized: function() {
+            document.getElementById('output').textContent = 'Ready\n';
+            ModuleInstance = this;
+        }
+    });
+
+    async function runSim() {
+        if (!ModuleInstance) {
+            alert('WASM module not loaded yet!');
+            return;
+        }
+        document.getElementById('output').textContent = '';
+        let args = [];
+        args.push("--loglevel=0");
+        args = args.concat(document.getElementById('args').value.split(' '));
+        ModuleInstance.callMain(args);
+    }
+</script>
+</pre>
