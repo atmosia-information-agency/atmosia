@@ -1,0 +1,46 @@
+<head>
+<!--# include virtual="/header.html" -->
+<title>Atmosia - Subframe TLDR Doc</title>
+</head>
+<body><div style="margin-left: 10%; margin-right: 10%; margin-bottom: 20%;">
+  <p><i>Disclaimer: No, this won't work on Wizard's Den servers. Sorry. They hate <s>fun</s> unpredictable game content over there, move to Goob, KS14, Funky or even Einstein Engines to perform this.</i></p>
+  <h2>What is subframe?</h2>
+  <p>Subframe is a family of coding oversights that relies on the game processing every single entity <b>in some defined "update" order.</b><br>
+  In SS14, it most commonly manifests as single pipelines (of <i>any</i> entity, not just real gas pipes) behaving inconsistently.<br>
+  * For example, two logic gates wired to each other (like a clock made out of XNORs) can pulse each other either once per two ticks, or once per tick (both gates flipflop off and on during the same tick.)</p>
+
+  <h2>How do I build one (with pipes?)</h2>
+  <ol>
+    <li>Ensure nothing has already been built or unanchored. Otherwise, you might fail.</li>
+    <li>Start with a pump of some kind - for example, the O2 chamber outlet pump. Locate its outlet.</li>
+    <li>Build a gas filter facing <i>toward the pump's outlet.</i></li>
+    <li>Build a gas filter facing <i>away</i> from the pump's outlet, and join the three devices together in a loop:<br><img src="/static/subframe_example.png" alt="<pre>
+  ┌<┐ 
+ >┴>┘</pre>"</img>
+    </li>
+    <li>Set the pump to 4499.9 kPa.</li>
+  </ol>
+  <p>You're done. If you did it correctly, gas will start piling up beyond the 4500 kPa limit of a pump, and beyond 9000 of a volume pump.</p>
+  <hr>
+  <h1>Q/A</h1>
+  <h3>...Why 4499?</h3>
+  <p>Because if it was 4500, it would <i>clog.</i> The filter that's facing the output would see that "ah, my output's already at pressure limit!" and stop immediately.</p>
+
+  <h3>Why would it fail if someone built or removed something? Like, does it apply to literally anything?</h3>
+  <p>No, of course not. The only thing we care about here is pumps, valves, filters, mixers, freezers, <i>anything</i> that could be considered an active grounded pipe device. So long as that's never touched, you're good.<br>
+  Otherwise, place some pumps until you've "filled" the metaphorical device gap that was caused by unanchoring.</p>
+
+  <h3>That schematic above is confusing. Are those all filters? Should they be inverted?</h3>
+  <p>Yes, those are all "filters", but the bottom left arrow could be anything so long as it doesn't pump >4500kPa.</p>
+
+  <h3>Do we have to use filters?</h3>
+  <p>Pretty much yes. Because filters are 5x stronger than volume pumps, and because a volume pump's maximum pumping volume per "tick" is 800L, which is a <i>paltry</i> 4 pipes of volume.<br>
+  You can't make a GoidaTEG out of that if you tried.</p>
+
+  <h3>How do I make tritium out of this?</h3>
+  <p>Short story is you do steps 2 and 3 but with any of the last filters' side outputs. But for debugging, see the <a href="guides/subframe.html">full length guide.</a></p>
+
+  <h3>This doesn't read like a TL;DR at all. Why is there STILL an entire two screens of information?</h3>
+  <p>Okay, look. You presumably asked how to build a subframe. You never asked to learn WHY is subframe. This is the smallest I could get with a high enough "replication success rate".</p><br>
+  <p style="text-align: center;"><i>-router, 2025</i></p>
+</div></body>

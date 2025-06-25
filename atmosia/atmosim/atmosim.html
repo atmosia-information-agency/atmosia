@@ -2,13 +2,134 @@
 <!--# include virtual="/header.html" -->
 <title>Atmosia - Atmosim</title>
 </head>
-<pre>
+<div class="container" style="max-width: 70%;">
 <h1>Atmosim Web</h1>
-<textarea rows="5" cols="60" type="text" id="args" placeholder="Enter -h to see usage instructions"></textarea>
-<button onclick="runSim()">Run</button>
-<div id="output"></div>
+
+<div>
+  <div id="gases-div" class="horizontal-container">
+    <div id="mixg-div" style="width: 48%; float: left;">
+      <h4>Fuel Gases (--mixg)</h4>
+      <div id="mixg-container" class="gas-selector">
+        <!-- Default entries will be created by JS -->
+      </div>
+      <button onclick="addGasEntry('mixg-container')" style="margin-top: 5px;">+ Add Fuel Gas</button>
+    </div>
+
+    <div id="primerg-div" style="width: 48%; float: right;">
+      <h4>Primer Gases (--primerg)</h4>
+      <div id="primerg-container" class="gas-selector">
+        <!-- Default entries will be created by JS -->
+      </div>
+      <button onclick="addGasEntry('primerg-container')" style="margin-top: 5px;">+ Add Primer Gas</button>
+    </div>
+  </div>
+
+  <div id="temps-div" class="horizontal-container">
+    <div id="mixt-div" style="width: 48%; float: left;">
+      <h4>Mix Temp Range (--m1/--m2)</h4>
+      <div style="display: flex; gap: 5px;">
+        <input type="number" id="m1" placeholder="Min (K)" step="1" style="flex: 1" value="375.15" required>
+        <input type="number" id="m2" placeholder="Max (K)" step="1" style="flex: 1" value="595.15" required>
+      </div>
+    </div>
+    <div id="thirt-div" style="width: 48%; float: right;">
+      <h4>Primer Temp Range (--t1/--t2)</h4>
+      <div style="display: flex; gap: 5px;">
+        <input type="number" id="t1" placeholder="Min (K)" step="1" style="flex: 1" value="293.15" required>
+        <input type="number" id="t2" placeholder="Max (K)" step="1" style="flex: 1" value="293.15" required>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Advanced Options</h3>
+<div class="advanced-options">
+  <div class="option-group">
+    <label class="full-width">
+      <input type="checkbox" id="mixtoiter">
+      <span>Iterate Mix Temp (-s)</span>
+    </label>
+  </div>
+
+  <div class="option-group">
+    <h4>Runtime Configuration (-rt, -sr)</h4>
+    <div class="param-options">
+      <label>
+        Runtime (s):
+        <input type="number" id="runtime" step="0.5" value="1" min="0.1" class="small-input">
+      </label>
+      <label>
+        Rounds:
+        <input type="number" id="samplerounds" value="5" min="1" class="small-input">
+      </label>
+    </div>
+  </div>
+
+  <div class="option-group">
+    <h4>Optimization Parameter (-p)</h4>
+    <div class="gas-selector">
+      <div class="gas-entry">
+        <select class="param-select">
+          <option value="radius">Radius</option>
+          <option value="ticks">Ticks</option>
+          <option value="temperature">Temperature</option>
+        </select>
+        <div style="display: flex; gap: 10px; margin-left: 10px;">
+          <label style="white-space: nowrap">
+            <input type="checkbox" checked class="param-max">
+            <span>Maximize</span>
+          </label>
+          <label style="white-space: nowrap">
+            <input type="checkbox" class="param-measure">
+            <span>Measure Before Sim</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option-group">
+    <h4>Post Restrictions (-ra)</h4>
+    <div id="restrictions-container" class="gas-selector">
+      <!-- Empty by default - filled out via JS -->
+    </div>
+    <button onclick="addRestrictionEntry()">+ Add Restriction</button>
+  </div>
+
+  <div class="option-group" style="grid-column: 1 / -1">
+    <h4>Custom Arguments</h4>
+    <input type="text" id="custom_args" placeholder="Additional arguments" style="width: 100%; margin-bottom: 5px;">
+  </div>
+</div>
+
+<div style="display: flex; gap: 10px; margin-bottom: 15px;">
+  <button onclick="runSim()" style="padding: 10px 20px; font-size: 1.1em">Run Simulation</button>
+  <button onclick="runHelp()">Show Help</button>
+</div>
+<pre id="output"></pre>
 <script src="atmosim.js"></script>
 <script>
+    const GASES = [
+        {value: 'oxygen', name: 'Oxygen'},
+        {value: 'plasma', name: 'Plasma'},
+        {value: 'tritium', name: 'Tritium'},
+        {value: 'nitrogen', name: 'Nitrogen'},
+        {value: 'water_vapour', name: 'Water Vapour'},
+        {value: 'carbon_dioxide', name: 'Carbon Dioxide'},
+        {value: 'frezon', name: 'Frezon'},
+        {value: 'nitrous_oxide', name: 'Nitrous Oxide'},
+        {value: 'nitrium', name: 'Nitrium'}
+    ];
+
+    const PARAMETERS = [
+        {value: 'radius', name: 'Radius'},
+        {value: 'ticks', name: 'Ticks'},
+        {value: 'temperature', name: 'Temperature'}
+    ];
+
+    // uncheck by default
+    document.getElementById('mixtoiter').checked = false;
+
     let ModuleInstance = null;
 
     // Initialize module when script loads
@@ -23,16 +144,173 @@
         }
     });
 
+    function addRestrictionEntry() {
+        const container = document.getElementById('restrictions-container');
+        const newEntry = document.createElement('div');
+        newEntry.className = 'gas-entry';
+
+        const select = document.createElement('select');
+        select.className = 'param-select';
+
+        PARAMETERS.forEach(param => {
+            const option = document.createElement('option');
+            option.value = param.value;
+            option.textContent = param.name;
+            select.appendChild(option);
+        });
+
+        const minInput = document.createElement('input');
+        minInput.type = 'number';
+        minInput.className = 'restrict-min';
+        minInput.placeholder = 'Min';
+        minInput.style.width = '80px';
+
+        const maxInput = document.createElement('input');
+        maxInput.type = 'number';
+        maxInput.className = 'restrict-max';
+        maxInput.placeholder = 'Max';
+        maxInput.style.width = '80px';
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-gas';
+        removeBtn.textContent = '-';
+        removeBtn.onclick = () => removeGasEntry(removeBtn);
+
+        newEntry.append(select, minInput, ' - ', maxInput, removeBtn);
+        container.appendChild(newEntry);
+    }
+
+    function addGasEntry(containerId, selectedGas = '') {
+        const container = document.getElementById(containerId);
+        const newEntry = document.createElement('div');
+        newEntry.className = 'gas-entry';
+
+        const select = document.createElement('select');
+        select.className = 'gas-select';
+
+        GASES.forEach(gas => {
+            const option = document.createElement('option');
+            option.value = gas.value;
+            option.textContent = gas.name;
+            if (gas.value === selectedGas) option.selected = true;
+            select.appendChild(option);
+        });
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-gas';
+        removeBtn.textContent = '-';
+        removeBtn.onclick = () => removeGasEntry(removeBtn);
+
+        newEntry.append(select, removeBtn);
+        container.appendChild(newEntry);
+    }
+
+    // Initialize default gas entries
+    document.addEventListener('DOMContentLoaded', () => {
+        addGasEntry('mixg-container', 'plasma');
+        addGasEntry('mixg-container', 'tritium');
+        addGasEntry('primerg-container', 'oxygen');
+    });
+
+    function removeGasEntry(button) {
+        button.closest('.gas-entry').remove();
+    }
+
+    function buildArg(name, value, isFlag = false) {
+        if (!value && value !== 0) return [];
+        return isFlag ? [name] : [`${name}=${value}`];
+    }
+
     async function runSim() {
         if (!ModuleInstance) {
             alert('WASM module not loaded yet!');
             return;
         }
+
+        // clear output
         document.getElementById('output').textContent = '';
-        let args = [];
-        args.push("--loglevel=0");
-        args = args.concat(document.getElementById('args').value.split(' '));
+
+        // loglevels above 0 don't really work right now
+        let args = ["--loglevel=0"];
+
+        // get the temperature ranges
+        // also check if they're ascending since it'll break otherwise
+        const m1 = parseFloat(document.getElementById('m1').value);
+        const m2 = parseFloat(document.getElementById('m2').value);
+        const t1 = parseFloat(document.getElementById('t1').value);
+        const t2 = parseFloat(document.getElementById('t2').value);
+        if (isNaN(m1) || isNaN(m2) || isNaN(t1) || isNaN(t2)) {
+            alert('All temperature fields must be filled out');
+            return;
+        }
+        if (m1 > m2) {
+            alert('Mix temperature range must be ascending');
+            return;
+        }
+        if (t1 > t2) {
+            alert('Primer temperature range must be ascending');
+            return;
+        }
+        args.push(`--m1=${m1}`);
+        args.push(`--m2=${m2}`);
+        args.push(`--t1=${t1}`);
+        args.push(`--t2=${t2}`);
+
+        // Add gas mix arguments
+        const mixg = Array.from(document.querySelectorAll('#mixg-container .gas-select'))
+            .map(select => select.value);
+        if (mixg.length > 0) args.push(`--mixg=[${mixg.join(',')}]`);
+
+        const primerg = Array.from(document.querySelectorAll('#primerg-container .gas-select'))
+            .map(select => select.value);
+        if (primerg.length > 0) args.push(`--primerg=[${primerg.join(',')}]`);
+
+
+        // Add checkboxes and other options
+        if (document.getElementById('mixtoiter').checked) args.push('--mixtoiter');
+
+        const runtime = document.getElementById('runtime').value;
+        if (runtime) args.push(`--runtime=${runtime}`);
+
+        const samplerounds = document.getElementById('samplerounds').value;
+        if (samplerounds) args.push(`--samplerounds=${samplerounds}`);
+
+        // Add parameter optimization options
+        const paramSelect = document.querySelector('.param-select');
+        const paramMax = document.querySelector('.param-max').checked;
+        const paramMeasure = document.querySelector('.param-measure').checked;
+        args.push(`--param=[${paramSelect.value},${paramMax},${paramMeasure}]`);
+
+        // Add post restrictions
+        const restrictions = Array.from(document.querySelectorAll('#restrictions-container .gas-entry')).map(entry => {
+            const param = entry.querySelector('.param-select').value;
+            const min = entry.querySelector('.restrict-min').value || '-';
+            const max = entry.querySelector('.restrict-max').value || '-';
+            return [param, min, max].join(',');
+        });
+
+        if (restrictions.length > 0) {
+            args.push(`--restrictpost=[[${restrictions.join('],[')}]]`);
+        }
+
+        // Add any custom arguments
+        const customArgs = document.getElementById('custom_args').value;
+        if (customArgs) {
+            args = args.concat(customArgs.split(' '));
+        }
+
+        console.log(`Running with args '${args}'`);
+
         ModuleInstance.callMain(args);
+    }
+
+    function runHelp() {
+        if (!ModuleInstance) {
+            alert('WASM module not loaded yet!');
+            return;
+        }
+        document.getElementById('output').textContent = '';
+        ModuleInstance.callMain(['-h']);
     }
 </script>
 </pre>

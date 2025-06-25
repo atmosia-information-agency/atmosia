@@ -42,6 +42,39 @@ ul {
     padding-left: 20px;
 }
 
+.horizontal-container {
+    overflow: auto;
+}
+
+.gas-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 5px;
+}
+
+.gas-entry {
+    display: flex;
+    gap: 5px;
+    min-height: 20px;
+}
+
+.gas-select {
+    flex: 1;
+    padding: 3px;
+}
+
+.remove-gas {
+    padding: 0 8px;
+    background-color: #ffcccc;
+    border: 1px solid #ff6666;
+    cursor: pointer;
+}
+
+.remove-gas:hover {
+    background-color: #ff9999;
+}
+
 li {
     margin-bottom: 5px;
 }
@@ -65,4 +98,34 @@ th {
 .goback {
     padding: 5px;
     background-color: #a8a8a8;
+}
+
+.advanced-options {
+    border: 1px solid #ddd;
+    background: #f8f8f8;
+}
+
+.option-group {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+.option-group h4 {
+    margin: 0 0 10px 0;
+    color: #444;
+    font-size: 0.95em;
+}
+
+.option-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 5px 0;
+}
+
+.param-options {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
 }
