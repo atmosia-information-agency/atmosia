@@ -9,49 +9,166 @@ For any recipe in this list, usually the production steps will be as follows:
 1. Produce no less gas than is mentioned in the REQ section, preferably more
 2. Mix the gases in the MIX section into a pipenet, required gas percentages provided; try to be precise
 2a. If mixing gases with different temperatures, consider using the atmosim -m utility for help, since gas mixers mix pressure-wise and not mol-wise
-3. Heat or cool the resulting mix to the temperature outlined in the section
+3. Heat or cool the resulting mix to the temperature outlined in the section* (SEE NOTE)
 4. Put the resulting mix into a canister, set the canister's release pressure to what's provided in the section
-5. Get the gas mentioned in the CAN section into a pipenet, heat or cool it to provided temperature (if needed)
+5. Get the gas mentioned in the CAN section into a pipenet, heat or cool it to provided temperature* (if needed) (SEE NOTE)
 5a. If you're heating plasma or frezon, you might want to use a radiator-based heater for it (TODO: guide)
 6. Get the gas into a canister, make sure canister pressure is above what's mentioned in the CAN section
 7. Fill as many empty gas tanks as you want from the MIX section gas canister; do not change the release pressure, and take care to not leak the gas
-8. To prime a filled gas tank, put it into the CAN section gas canister, then fill it with max release pressure; after the time mentioned, it will explode
+8. To prime a filled gas tank, put it into the CAN section gas canister, then fill it with the specified (unspecified means max) release pressure; after the time mentioned, it will explode
 
-Recipes discovered using <a href="https://github.com/Ilya246/atmosim">atmosim</a>, a SS14 atmos utility
+*NOTE: when precisely heating or cooling, cut off the gas intake pump and do NOT have any canisters or vents attached to the pipenet you're doing it with - this will mess up your temperature
+* instead, have your gas be contained ONLY in pipes, wait for it to get to the needed temperature, then use a pump to get it to a pipenet with canister attached;
+* additionally, keep in mind that heaters and freezers overshoot their set temperature by exactly 2 degrees
+* so, when heating, set the heater to 2 degrees below what you want, and for freezers, 2 degrees above what you want
 
-<h3>tritium-27r-2s-OT+P</h3>
-STATS: [ time 2.0s | radius 27.00til | optstat 0.67799586 ]
-MIX:   [ 84.894356% oxygen | 15.105642% tritium | 31.839327K | 237.63799kPa ]
-CAN:   [ 100% plasma | 674.27325K | >1795.2507kPa ]
-REQ:   [ 1070.71mol oxygen | 190.52mol tritium | 449.92mol plasma ]
+Recipes discovered using <a href="https://github.com/Ilya246/atmosim">atmosim</a> <i>(<a href="/atmosim/atmosim.html">web version</a>)</i>, a SS14 atmos utility
 
-<h3>ticks-26r-4.5s-OT+F</h3>
-STATS: [ time 4.5s | radius 26.47til | optstat 9 ]
-MIX:   [ 71.678116% oxygen | 28.321882% tritium | 144.5651K | 785.4228kPa ]
-CAN:   [ 100% frezon | 452.22748K | >1245.5095kPa ]
-REQ:   [ 658.06mol oxygen | 260.02mol tritium | 465.41mol frezon ]
+<h3>tritium-29r-2s-OT+P</h3>
+STATS: [ time 2.0s | radius 29.13til ]
+MIX:   [ 82% oxygen | 18% tritium | 30.1K | 245kPa ]
+CAN:   [ 100% plasma | 605K | >1788kPa ]
+REQ:   [ 1630mol oxygen | 400mol tritium | 680mol plasma ]
 
-<h3>tritium-20r-8.5s-OT+P</h3>
-STATS: [ time 8.5s | radius 20.00til | optstat 0.6323899 ]
-MIX:   [ 68.93031% oxygen | 31.069693% tritium | 127.03016K | 429.95108kPa ]
-CAN:   [ 100% plasma | 424.4739K | >1602.2509kPa ]
-REQ:   [ 394.24mol oxygen | 177.70mol tritium | 637.85mol plasma ]
+Tolerances:
+  Fuel temp: 30.06561K - 30.534548K
+  Fuel pressure: 236.82718kPa - 245.29996kPa
+  Primer temp: 557.55963K - 605.9423K
+  Release pressure: 1007.77405kPa - 1016.1699kPa
+  Mix oxygen: 80.916885% - 82.61804%
+  Mix tritium: 17.381971% - 19.083122%
 
-<h3>ticks-20r-10.5s-OT+F</h3>
-STATS: [ time 10.5s | radius 20.33til | optstat 21 ]
-MIX:   [ 65.97827% oxygen | 34.02173% tritium | 167.26158K | 809.4505kPa ]
-CAN:   [ 100% frezon | 431.65814K | >1221.3961kPa ]
-REQ:   [ 539.56mol oxygen | 278.22mol tritium | 478.14mol frezon ]
+<h3>ticks-26r-3.5s-OT+F</h3>
+STATS: [ time 3.5s | radius 26.32til ]
+MIX:   [ 73% oxygen | 27% tritium | 127K | 760kPa ]
+CAN:   [ 100% frezon | 460K | >1269kPa ]
+REQ:   [ 1000mol oxygen | 372mol tritium | 630mol frezon ]
 
-<h3>ticks-13r-22.5s-PT+O</h3>
-STATS: [ time 22.5s | radius 13.02til | optstat 45 ]
-MIX:   [ 52.208485% plasma | 47.791515% tritium | 382.42734K | 684.853kPa ]
-CAN:   [ 100% oxygen | 293.15K | >1346.4385kPa ]
-REQ:   [ 157.99mol plasma | 144.62mol tritium | 776.14mol oxygen ]
+Tolerances:
+  Fuel temp: 126.03397K - 130.04619K
+  Fuel pressure: 738.72015kPa - 763.59717kPa
+  Primer temp: 448.33893K - 464.50247K
+  Release pressure: 1010.34393kPa - 1031.0214kPa
+  Mix oxygen: 72.69256% - 75.395195%
+  Mix tritium: 24.604805% - 27.307436%
 
-<h3>ticks-26r-8.5s-O/T/N2+F</h3>
-STATS: [ time 8.5s | radius 26.13til | optstat 17 ]
-MIX:   [ 14.539835% oxygen | 16.864481% tritium | 68.59568% nitrous_oxide | 112.840805K | 726.60645kPa ]
-CAN:   [ 100% frezon | 542.761K | >1304.536kPa ]
-REQ:   [ 158.21mol oxygen | 183.51mol tritium | 746.40mol nitrous_oxide | 406.15mol frezon ]
+<h3>ticks-20r-7s-OT+P</h3>
+Best:
+STATS: [ time 7.0s | radius 20.10til ]
+MIX:   [ 70% oxygen | 30% tritium | 98K | 361kPa ]
+CAN:   [ 100% plasma | 441K | >1671kPa ]
+REQ:   [ 592mol oxygen | 254mol tritium | 869mol plasma ]
+
+Tolerances:
+  Fuel temp: 97.95398K - 98.39734K
+  Fuel pressure: 357.248kPa - 361.1705kPa
+  Primer temp: 432.83575K - 441.29752K
+  Release pressure: 1011.0966kPa - 1017.2214kPa
+  Mix oxygen: 69.730774% - 70.09608%
+  Mix tritium: 29.903925% - 30.26922%
+
+<h3>ticks-20r-9s-OT+F</h3>
+STATS: [ time 9.0s | radius 20.01til ]
+MIX:   [ 67.35% oxygen | 32.65% tritium | 151.75K | 788kPa ]
+CAN:   [ 100% frezon | 440K | >1243kPa ]
+REQ:   [ 803mol oxygen | 390mol tritium | 638mol frezon ]
+
+Tolerances:
+  Fuel temp: 151.63971K - 151.86636K
+  Fuel pressure: 787.86176kPa - 788.3511kPa
+  Primer temp: 435.08725K - 446.99808K
+  Release pressure: 1013.0345kPa - 1013.3584kPa
+  Mix oxygen: 67.310295% - 67.39624%
+  Mix tritium: 32.60375% - 32.689697%
+
+<h3>radius-13r-21s-PT+O</h3>
+STATS: [ time 21.0s | radius 12.72til ]
+MIX:   [ 54% plasma | 46% tritium | 383.5K | 662.5kPa ]
+CAN:   [ 100% oxygen | 293.15K | >1369kPa ]
+REQ:   [ 213mol plasma | 183mol tritium | 1071mol oxygen ]
+
+Tolerances:
+  Fuel temp: 382.9771K - 385.02438K
+  Fuel pressure: 661.7741kPa - 663.1439kPa
+  Primer temp: 292.47784K - 293.62457K
+  Release pressure: 1012.7098kPa - 1014.02313kPa
+  Mix plasma: 53.803986% - 55.475967%
+  Mix tritium: 44.524036% - 46.19602%
+
+<h3>ticks-18r-10.5s-P/T/Ni+O</h3>
+STATS: [ time 10.5s | radius 18.03til ]
+MIX:   [ 52.7% plasma | 34% tritium | 13.3% nitrium | 106.6K | 298kPa ]
+CAN:   [ 100% oxygen | 293.15K | release 902kP	a >1515kPa ]
+REQ:   [ 340mol plasma | 231mol tritium | 95mol nitrium | 1195mol oxygen ]
+
+Tolerances:
+  Fuel temp: 105.69791K - 106.974686K
+  Fuel pressure: 296.6518kPa - 299.67685kPa
+  Primer temp: 292.5708K - 294.00647K
+  Release pressure: 900.45306kPa - 903.0861kPa
+  Mix plasma: 52.645557% - 52.83332%
+  Mix tritium: 33.603844% - 34.161644%
+  Mix nitrium: 13.261671% - 13.3281145%
+
+<h3>ticks-26r-26s-P/T/Ni/F+O</h3>
+STATS: [ time 26.5s | radius 26.18til ]
+MIX:   [ 1.777% plasma | 17.338% tritium | 53.676% nitrium | 27.209% frezon | 30.00K | 189.4kPa ]
+CAN:   [ 100.000% oxygen | 293.15K | release 609.3kPa | >1033kPa ]
+REQ:   [ 26mol plasma | 252mol tritium | 778mol nitrium | 394mol frezon | 808mol oxygen ]
+
+Tolerances:
+  Fuel temp: 29.999268K - 30.000126K
+  Fuel pressure: 189.39914kPa - 189.40474kPa
+  Primer temp: 292.83597K - 293.20828K
+  Release pressure: 609.23035kPa - 609.3524kPa
+  Mix plasma: 1.7735479% - 1.7777281%
+  Mix tritium: 17.333166% - 17.338377%
+  Mix nitrium: 53.67474% - 53.676216%
+  Mix frezon: 27.208878% - 27.210453%
+
+<h3>ticks-26r-72s-P/T/Ni/F+O</h3>
+STATS: [ time 72.0s | radius 26.04til | optstat 144 ]
+MIX:   [ 1.8400% plasma | 13.6559% tritium | 58.5313% nitrium | 25.9729% frezon | 35.18K | 398.0kPa ]
+CAN:   [ 100.0000% oxygen | 293.15K | release 851.1kPa | >1309kPa ]
+REQ:   [ 48mol plasma | 355mol tritium | 1519mol nitrium | 675mol frezon | 1024mol oxygen ]
+
+Еolerances:
+  Fuel temp: 35.179546K - 35.18006K
+  Fuel pressure: 397.99933kPa - 398.0055kPa
+  Primer temp: 293.01514K - 293.28305K
+  Release pressure: 850.8945kPa - 851.1569kPa
+  Mix plasma: 1.8382692% - 1.8401676%
+  Mix tritium: 13.654679% - 13.656018%
+  Mix nitrium: 58.53067% - 58.531307%
+  Mix frezon: 25.972837% - 25.973242%
+
+<h3>ticks-25r-6.5s-P/T/Ni+O</h3>
+STATS: [ time 6.5s | radius 25.15til | optstat 13 ]
+MIX:   [ 22.333502% plasma | 7.5465417% tritium | 70.11995% nitrium | 24.11K | 305.0kPa ]
+CAN:   [ 100% oxygen | 293.15K | release 1013.3kPa | >1728kPa ]
+REQ:   [ 648mol plasma | 219mol tritium | 2035mol nitrium | 1352mol oxygen ]
+
+<h3>ticks-18r-295s-N2/T+O/F</h3>
+<b>NOTE: precise mix, do not round the values</b>
+
+STATS: [ time 295.0s | radius 18.12til | optstat 19.217604 ]
+MIX:   [ 61.80722% nitrous_oxide | 38.192783% tritium | 100.90K | 296.0kPa ]
+CAN:   [ 2.6740324% oxygen | 97.325966% frezon | 955.14K | release 909.7kPa | >1529kPa ]
+REQ:   [ 416mol nitrous_oxide | 257mol tritium | 10mol oxygen | 358mol frezon ]
+
+<b>round number version (not precise mix):</b>
+STATS: [ time 302.0s | radius 17.42til ]
+MIX:   [ 62% nitrous_oxide | 38% tritium | 95K | 275kPa ]
+CAN:   [ 3% oxygen | 97% frezon | 945K | release 885kPa | >1500kPa ]
+REQ:   [ 412mol nitrous_oxide | 261mol tritium | 8mol oxygen | 348mol frezon ]
+
+<h3>ticks-16r-1921s-N2/T+O/F</h3>
+<b>NOTE: precise mix, do not round the values</b>
+
+STATS: [ time 1921.5s | radius 16.04til | optstat 3843 ]
+MIX:   [ 49.31195% nitrous_oxide | 50.688046% tritium | 159.82K | 476.4kPa ]
+CAN:   [ 2.8119187% oxygen | 97.18808% frezon | 528.35K | release 788.9kPa | >1101.4kPa ]
+REQ:   [ 340mol nitrous_oxide | 349mol tritium | 13.6mol oxygen | 470mol frezon ]
+
+<i>why? better question, why not?</i>
 </pre>

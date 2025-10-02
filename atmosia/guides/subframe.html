@@ -34,7 +34,7 @@ Volumetric devices calculate how much volume they would pump in the 0.5 second t
 However, they do not. As a mechanic, there exists atmos speedup, which causes every atmos device to work 8 times faster than specified. This means that a volumetric's pump real maximum speed is 1600 L/s, and a filter's - 8000 L/s.
 For filters, that's 4000L per update. Why does this matter?
 
-To understand that, we have to learn what a pipe node is. Every single piece of a pipe, ending of a pump, radiator, etc. (2 per: yes, they hold 400L total), or a filter/mixer (3 per, 600L total) is a pipe node. Even heaters are a pipe node.
+To understand that, we have to learn what a pipe node is. Every single piece of a pipe (200L), ending of a pump, radiator, etc. (2 per: yes, they hold 400L total), or a filter/mixer (3 per, 600L total) is a pipe node. Even heaters are a pipe node.
 Adjacent (the nodes of a single pump, radiator, filter, mixer, etc. do NOT count as adjacent; however, specifically manual/signal valves are an exception and are essentially a normal pipe when open) nodes join into a pipe network, or pipenet.
 One pipenet is essentially a single continuous pipe. Putting gas at one end of it is equivalent to putting gas at the other. The shape or length does not matter. It is a single volume. Individual pipe nodes do not store gas, only the entire pipenet.
 -# Yes, gas analyzers quite literally lie to you and divide shown mole/volume values by the amount of nodes in the targeted pipenet.
@@ -66,9 +66,14 @@ In addition, some *logic circuits* may take advantage of subframe. In more detai
 These were originally pioneered by a character named Zifnab Idleton on the Frontier servers, sometime in early 2024 - but are out of scope for this document. (Suffice to say, don't do this on MRP unless you know the admins are cool with it.)
 
 # Building subframe pipelines
-There are two ways to build subframe - either directly (more useful at roundstart), or with sorting (if you decide to build subframe devices later on).
-Direct building will *not* work if any atmos has been modified - so it's usually reserved to the **very start of a shift.**
--# Why does being roundstart matter? Less atmos devices means their update order is more reliably correlated with their build order. Why? We don't know. Yet. (2025.III.23)
+And now, let's explain how can you causes devices to be updated in the order you want.
+Every grid has its own list of atmos devices, and update order picks devices from that list in order.
+Removing or unanchoring an atmos device essentially "crosses out" its item on the list. We also remember that we crossed out this item last.
+Adding an atmos device will add it as an item to the end of the list, unless we remember a crossed-out item exists, in which case it will overwrite the crossed-out item instead.
+If we overwrite a crossed-out item, and, when we crossed out that item, another item was already crossed out, we will remember said item as the "current" crossed-out item instead.
+
+Basically: devices update in the order they are built, but if devices were removed or unanchored, newly built devices will take their place in the update order instead.
+This means someone unanchoring or deleting a device on the same grid while you're building something can mess up your update order.
 
 ## Direct construction
 Use an RCD or steel sheets to construct the following schematic:
@@ -91,7 +96,7 @@ If you observe it not working, see the other construction methods below.
 Note: you **cannot** use 4500 kPa at any point. We have established this earlier, due to the default behavior of volume pumps - if the pressure is ≥4500kPa, filter 2 will not be able to pump.
 
 ## Sorting-based construction
-This method is best used anywhere past 5-20 minutes of the shift. To start off, how *do* we determine update order?
+This method is best used anywhere past 5-20 minutes of the shift, ***and where you can't construct any more devices***. To start off, how *do* we determine update order?
 We have to employ a consequence of update order. In a perfect world, a linear filter design like this:
 
 >>>
@@ -264,7 +269,7 @@ In this example, we have a tritium chamber almost *directly* connected to the TE
 1. Input 100 kPa of 1P:99O until you see the temperature go above 1643.15K.
 2. Double the pressure, and wait until the temperature stops dropping.
 3. Double the pressure again - repeat step 2 until 4500 (or 4499.99) kPa injection (mixer pressure). So far, standard.
-4. Start increasing the plasma percentage slowly (keeping 1% plasma content) until 8.77% plasma. (Exact: 8.(771929824561403508)%)
+4. Start increasing the plasma percentage slowly (keeping 1% plasma content) until 9.615% plasma. (Exact: 9.(615384)%)
   * Even though this is 100%/(10 O/T + 0.4 O/P), you might encounter oxygen is dropping. If this is the case, tune it until it *isn't*.
 5. After achieving the desired water vapor amount, burn away all the oxygen by increasing the plasma percentage.
   * You should have 2000 mols in total (500 mols if 4-pipenode storage net) left by the end (if planned for tritium).
